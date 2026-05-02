@@ -2,7 +2,7 @@ using Ztracena_Tlapka_Backend.Application.Common;
 
 namespace Ztracena_Tlapka_Backend.Api.Middleware;
 
-public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+public class ExceptionHandlingMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context)
     {
@@ -19,12 +19,10 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Unhandled exception");
-            
             context.Response.StatusCode = 500;
             context.Response.ContentType = "application/json";
             
-            await context.Response.WriteAsJsonAsync(ApiResponse.Error());
+            await context.Response.WriteAsJsonAsync(ApiResponse.Error(new { message = exception.Message }));
         }
     }
 }
