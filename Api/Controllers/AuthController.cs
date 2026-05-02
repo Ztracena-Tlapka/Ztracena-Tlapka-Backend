@@ -7,9 +7,20 @@ namespace Ztracena_Tlapka_Backend.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IAuthService authService, ISessionService sessionService) : ControllerBase
+public class AuthController(IUserService userService, IAuthService authService, ISessionService sessionService) : ControllerBase
 {
     private const string CookieName = "session";
+    
+    [HttpPost("register")]
+    public async Task<IActionResult> Create([FromBody] RegisterUserRequest request)
+    {
+        if (await userService.EmailExistsAsync(request.Email))
+            throw new AppException<object>(409, new { message = "Email is already taken" }, ResCodes.Users.EmailTaken);
+
+        var created = await authService.RegisterAsync(request);
+        
+        return StatusCode(201, ApiResponse.Success(new { message = "User has been created", user = created }, ResCodes.Users.Added));
+    }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -26,7 +37,7 @@ public class AuthController(IAuthService authService, ISessionService sessionSer
             MaxAge = request.StayLoggedIn ? TimeSpan.FromDays(30) : TimeSpan.FromDays(1)
         });
 
-        return Ok(ApiResponse.Success(new { message = "Logged in successfully", user = sessionData }, ResCodes.Auth.LoggedIn));
+        return StatusCode(200, ApiResponse.Success(new { message = "Logged in successfully", user = sessionData }, ResCodes.Auth.LoggedIn));
     }
 
     [HttpPost("logout")]
@@ -39,7 +50,7 @@ public class AuthController(IAuthService authService, ISessionService sessionSer
 
         Response.Cookies.Delete(CookieName);
 
-        return Ok(ApiResponse.Success(new { message = "Logged out successfully" }, ResCodes.Auth.LoggedOut));
+        return StatusCode(200, ApiResponse.Success(new { message = "Logged out successfully" }, ResCodes.Auth.LoggedOut));
     }
 
     [HttpGet("verify")]
@@ -55,6 +66,6 @@ public class AuthController(IAuthService authService, ISessionService sessionSer
         if (session is null)
             throw new AppException<object>(401, new { message = "Not authenticated" }, ResCodes.Auth.NotAuthenticated);
 
-        return Ok(ApiResponse.Success(new { message = "Authenticated", user = session }, ResCodes.Auth.Verified));
+        return StatusCode(200, ApiResponse.Success(new { message = "Authenticated", user = session }, ResCodes.Auth.Verified));
     }
 }

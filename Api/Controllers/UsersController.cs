@@ -13,7 +13,7 @@ public class UsersController(IUserService userService) : ControllerBase
     [RequireAuth]
     [HttpGet]
     public async Task<IActionResult> GetAll() =>
-        Ok(ApiResponse.Success(new { message = "List of users", users = await userService.GetAllAsync() }, ResCodes.Users.Get));
+        StatusCode(200, ApiResponse.Success(new { message = "List of users", users = await userService.GetAllAsync() }, ResCodes.Users.Get));
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
@@ -21,18 +21,7 @@ public class UsersController(IUserService userService) : ControllerBase
         var user = await userService.GetByIdAsync(id)
             ?? throw new AppException<object>(404, new { message = "User is not exists" }, ResCodes.Users.NotFound);
 
-        return Ok(ApiResponse.Success(new { message = "User has been found", user }, ResCodes.Users.Get));
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
-    {
-        if (await userService.EmailExistsAsync(request.Email))
-            throw new AppException<object>(409, new { message = "Email is already taken" }, ResCodes.Users.EmailTaken);
-
-        var created = await userService.CreateAsync(request);
-        
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, ApiResponse.Success(new { message = "User has been created", user = created }, ResCodes.Users.Added));
+        return StatusCode(200, ApiResponse.Success(new { message = "User has been found", user }, ResCodes.Users.Get));
     }
 
     [HttpPut("{id:guid}")]
@@ -41,7 +30,7 @@ public class UsersController(IUserService userService) : ControllerBase
         var updated = await userService.UpdateAsync(id, request)
             ?? throw new AppException<object>(404, new { message = "User is not exists" }, ResCodes.Users.NotFound);
 
-        return Ok(ApiResponse.Success(new { message = "User has been updated", user = updated }, ResCodes.Users.Updated));
+        return StatusCode(200, ApiResponse.Success(new { message = "User has been updated", user = updated }, ResCodes.Users.Updated));
     }
 
     [HttpDelete("{id:guid}")]
@@ -51,6 +40,6 @@ public class UsersController(IUserService userService) : ControllerBase
         
         if (!deleted) throw new AppException<object>(404, new { message = "User is not exists" }, ResCodes.Users.NotFound);
 
-        return Ok(ApiResponse.Success(new { message = "User has been deleted", user = deleted }, ResCodes.Users.Deleted));
+        return StatusCode(200, ApiResponse.Success(new { message = "User has been deleted", user = deleted }, ResCodes.Users.Deleted));
     }
 }

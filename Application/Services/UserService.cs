@@ -19,27 +19,6 @@ public class UserService(IUserRepository repository) : IUserService
     public async Task<bool> EmailExistsAsync(string email) =>
         await repository.GetByEmailAsync(email) is not null;
 
-    public async Task<UserResponse> CreateAsync(CreateUserRequest request)
-    {
-        var user = new User
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            Phone = request.Phone,
-            Region = request.Region,
-            District = request.District,
-            City = request.City,
-            Street = request.Street,
-            PostalCode = request.PostalCode,
-            NewsletterSubscribed = request.NewsletterSubscribed,
-            UpdatedAt = DateTime.UtcNow,
-        };
-
-        return ToResponse(await repository.CreateAsync(user));
-    }
-
     public async Task<UserResponse?> UpdateAsync(Guid id, UpdateUserRequest request)
     {
         var user = await repository.GetByIdAsync(id);
