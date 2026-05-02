@@ -28,9 +28,6 @@ public class UsersController(IUserService userService) : ControllerBase
         if (await userService.EmailExistsAsync(request.Email))
             throw new AppException<object>(409, new { message = "Email is already taken" }, ResCodes.Users.EmailTaken);
 
-        if (await userService.PhoneExistsAsync(request.Phone))
-            throw new AppException<object>(409, new { message = "Phone number is already taken" }, ResCodes.Users.PhoneTaken);
-
         var created = await userService.CreateAsync(request);
         
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, ApiResponse.Success(new { message = "User has been created", user = created }, ResCodes.Users.Added));

@@ -19,9 +19,6 @@ public class UserService(IUserRepository repository) : IUserService
     public async Task<bool> EmailExistsAsync(string email) =>
         await repository.GetByEmailAsync(email) is not null;
 
-    public async Task<bool> PhoneExistsAsync(string phone) =>
-        await repository.GetByPhoneAsync(phone) is not null;
-
     public async Task<UserResponse> CreateAsync(CreateUserRequest request)
     {
         var user = new User
@@ -37,6 +34,7 @@ public class UserService(IUserRepository repository) : IUserService
             Street = request.Street,
             PostalCode = request.PostalCode,
             NewsletterSubscribed = request.NewsletterSubscribed,
+            UpdatedAt = DateTime.UtcNow,
         };
 
         return ToResponse(await repository.CreateAsync(user));

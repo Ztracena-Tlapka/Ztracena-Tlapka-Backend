@@ -16,9 +16,6 @@ public class UserRepository(AppDbContext db) : IUserRepository
     public async Task<User?> GetByEmailAsync(string email) =>
         await db.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-    public async Task<User?> GetByPhoneAsync(string phone) =>
-        await db.Users.FirstOrDefaultAsync(u => u.Phone == phone);
-
     public async Task<User> CreateAsync(User user)
     {
         db.Users.Add(user);

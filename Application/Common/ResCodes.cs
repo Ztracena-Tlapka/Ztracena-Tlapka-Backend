@@ -10,7 +10,6 @@ public static class ResCodes
     {
         public const string NotFound   = "E2001";
         public const string EmailTaken = "E2002";
-        public const string PhoneTaken = "E2003";
         public const string Added = "S2001";
         public const string Updated = "S2002";
         public const string Deleted = "S2003";
