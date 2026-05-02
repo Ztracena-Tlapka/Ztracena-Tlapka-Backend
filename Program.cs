@@ -16,11 +16,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+var redisConnection = Environment.GetEnvironmentVariable("REDIS_CONNECTION") 
+    ?? throw new InvalidOperationException("REDIS_CONNECTION is not set in .env");
+builder.Services.AddStackExchangeRedisCache(options => options.Configuration = redisConnection);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddSingleton<ISessionService, SessionService>();
 
 var app = builder.Build();
 

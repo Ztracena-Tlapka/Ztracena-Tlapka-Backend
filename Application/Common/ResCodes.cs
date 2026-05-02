@@ -15,4 +15,13 @@ public static class ResCodes
         public const string Deleted = "S2003";
         public const string Get = "S2004";
     }
+
+    public static class Auth
+    {
+        public const string InvalidCredentials = "E3001";
+        public const string NotAuthenticated   = "E3002";
+        public const string LoggedIn  = "S3001";
+        public const string LoggedOut = "S3002";
+        public const string Verified  = "S3003";
+    }
 }

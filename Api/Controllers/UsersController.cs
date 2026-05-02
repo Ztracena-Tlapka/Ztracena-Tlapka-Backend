@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ztracena_Tlapka_Backend.Application.Common;
 using Ztracena_Tlapka_Backend.Application.DTOs;
 using Ztracena_Tlapka_Backend.Application.Interfaces;
+using Ztracena_Tlapka_Backend.Api.Filters;
 
 namespace Ztracena_Tlapka_Backend.Api.Controllers;
 
@@ -9,6 +10,7 @@ namespace Ztracena_Tlapka_Backend.Api.Controllers;
 [Route("api/[controller]")]
 public class UsersController(IUserService userService) : ControllerBase
 {
+    [RequireAuth]
     [HttpGet]
     public async Task<IActionResult> GetAll() =>
         Ok(ApiResponse.Success(new { message = "List of users", users = await userService.GetAllAsync() }, ResCodes.Users.Get));
