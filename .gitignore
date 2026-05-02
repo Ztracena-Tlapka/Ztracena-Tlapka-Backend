@@ -1,0 +1,19 @@
+# Environment
+.env
+
+# Build output
+bin/
+obj/
+
+# Rider / VS
+.idea/
+.vs/
+*.user
+
+# dotnet
+*.suo
+*.userprefs
+
+# AI
+CLAUDE.md
+.claude/
