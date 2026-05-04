@@ -6,6 +6,7 @@ namespace Ztracena_Tlapka_Backend.Infrastructure.Persistence;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
+    public DbSet<NewsletterSubscribers> NewsletterSubscribers => Set<NewsletterSubscribers>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,6 +28,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(u => u.NewsletterSubscribed).HasColumnName("newsletter_subscribed").HasDefaultValue(false);
             e.Property(u => u.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
             e.Property(u => u.UpdatedAt).HasColumnName("updated_at");
+        });
+
+        modelBuilder.Entity<NewsletterSubscribers>(e =>
+        {
+            e.ToTable("newsletter_subscribers");
+            e.Property(u => u.Id).HasColumnName("id").ValueGeneratedOnAdd();
+            e.Property(u => u.Email).HasColumnName("email").HasMaxLength(255).IsRequired();
+            e.Property(u => u.IsSubscribed).HasColumnName("is_subscribed").HasDefaultValue(false);
+            e.Property(u => u.SubscribedAt).HasColumnName("subscribed_at").HasDefaultValueSql("NOW()");
         });
     }
 }

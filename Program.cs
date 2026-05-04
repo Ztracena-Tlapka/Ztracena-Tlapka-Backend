@@ -27,6 +27,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<ISessionService, SessionService>();
+builder.Services.AddScoped<INewsletterRepository, NewsletterRepository>();
+builder.Services.AddScoped<INewsletterService, NewsletterService>();
+builder.Services.AddSingleton<INewsletterTokenService, NewsletterTokenService>();
 
 var app = builder.Build();
 
